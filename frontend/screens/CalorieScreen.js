@@ -3,38 +3,35 @@ import { View, Text, StyleSheet, TextInput, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CalorieScreen() {
-  const [totalCalories, setTotalCalories] = useState(2000);
-  const [consumedCalories, setConsumedCalories] = useState(0);
-  const [inputCalories, setInputCalories] = useState('');
-
-  const CALORIES_KEY = 'consumedCalories';
+  const [totalCal, setCal] = useState(2000);
+  const [usedCal, setUsedCal] = useState(0);
+  const [newCal, setNewCal] = useState('');
 
   useEffect(() => {
     const loadCalories = async () => {
       try {
-        const storedCalories = await AsyncStorage.getItem(CALORIES_KEY);
+        const storedCalories = await AsyncStorage.getItem('calories');
         if (storedCalories !== null) {
-          setConsumedCalories(parseInt(storedCalories, 10));
+          setUsedCal(parseInt(storedCalories, 10));
         }
       } catch (error) {
-        console.error('Failed to load calories from storage:', error);
+        console.error('Failed to load calories:', error);
       }
     };
-
     loadCalories();
   }, []);
 
   useEffect(() => {
-    AsyncStorage.setItem(CALORIES_KEY, consumedCalories.toString());
-  }, [consumedCalories]);
+    AsyncStorage.setItem('calories', usedCal.toString());
+  }, [usedCal]);
 
-  const remainingCalories = totalCalories - consumedCalories;
+  const remainingCalories = totalCal - usedCal;
 
   const handleAddCalories = () => {
-    const value = parseInt(inputCalories, 10);
+    const value = parseInt(newCal, 10);
     if (!isNaN(value) && value > 0) {
-      setConsumedCalories(consumedCalories + value);
-      setInputCalories('');
+      setUsedCal(usedCal + value);
+      setNewCal('');
     }
   };
 
@@ -43,12 +40,10 @@ export default function CalorieScreen() {
       <Text style={styles.header}>Calorie Tracker</Text>
       <View style={styles.trackerBox}>
         <Text style={styles.label}>
-          Total Daily Calories:{' '}
-          <Text style={styles.value}>{totalCalories}</Text>
+          Total Daily Calories: <Text style={styles.value}>{totalCal}</Text>
         </Text>
         <Text style={styles.label}>
-          Consumed Calories:{' '}
-          <Text style={styles.value}>{consumedCalories}</Text>
+          Consumed Calories: <Text style={styles.value}>{usedCal}</Text>
         </Text>
         <Text style={styles.label}>
           Remaining Calories:{' '}
@@ -59,9 +54,8 @@ export default function CalorieScreen() {
         <TextInput
           style={styles.input}
           placeholder="Add calories"
-          keyboardType="numeric"
-          value={inputCalories}
-          onChangeText={setInputCalories}
+          value={newCal}
+          onChangeText={setNewCal}
         />
         <Button title="Add" onPress={handleAddCalories} />
       </View>

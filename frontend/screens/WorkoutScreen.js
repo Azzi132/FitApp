@@ -81,7 +81,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 24,
+    paddingTop: 250,
     backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   header: {
     fontSize: 22,
@@ -95,6 +98,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     padding: 8,
     marginBottom: 10,
+    width: 250,
   },
   workoutItem: {
     padding: 10,
@@ -106,5 +110,6 @@ const styles = StyleSheet.create({
   },
   list: {
     marginTop: 16,
+    width: 250,
   },
 });
