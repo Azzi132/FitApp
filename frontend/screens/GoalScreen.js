@@ -14,6 +14,10 @@ export default function GoalScreen() {
   const [runningGoal, setRunningGoal] = useState("");
   const [savedRunningGoal, setSavedRunningGoal] = useState("");
 
+  const [currentSteps, setCurrentSteps] = useState(2500);
+  const [currentCalories, setCurrentCalories] = useState(1000);
+  const [currentRunning, setCurrentRunning] = useState(3.5);
+
   useEffect(() => {
     loadStepGoal();
   }, []);
@@ -94,21 +98,36 @@ export default function GoalScreen() {
           <Button title="Save Goals" onPress={saveStepGoal} />
 
           {savedStepGoal !== "" && (
-            <Text style={styles.saved}>
-              Saved Step Goal: {savedStepGoal} Steps
-            </Text>
+            <>
+              <Text style={styles.saved}>
+                Saved Step Goal: {savedStepGoal} Steps
+              </Text>
+              <Text style={styles.progress}>
+                Progress: {currentSteps} / {savedStepGoal || 0} Steps
+              </Text>
+            </>
           )}
 
           {savedCalorieGoal !== "" && (
-            <Text style={styles.saved}>
-              Saved Calorie Goal: {savedCalorieGoal} Kcal
-            </Text>
+            <>
+              <Text style={styles.saved}>
+                Saved Calorie Goal: {savedCalorieGoal} Kcal
+              </Text>
+              <Text style={styles.progress}>
+                Progress: {currentCalories} / {savedCalorieGoal || 0} Kcal
+              </Text>
+            </>
           )}
 
           {savedRunningGoal !== "" && (
-            <Text style={styles.saved}>
-              Saved Running Goal: {savedRunningGoal} Km
-            </Text>
+            <>
+              <Text style={styles.saved}>
+                Saved Running Goal: {savedRunningGoal} Km
+              </Text>
+              <Text style={styles.progress}>
+                Progress: {currentRunning} / {savedRunningGoal || 0} Km
+              </Text>
+            </>
           )}
         </View>
       </TouchableWithoutFeedback>
@@ -166,5 +185,11 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 10,
     marginTop: 20,
+  },
+  progress: {
+    fontSize: 16,
+    color: "#555",
+    marginTop: 4,
+    marginBottom: 10,
   },
 });
