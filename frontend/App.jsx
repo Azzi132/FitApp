@@ -8,17 +8,15 @@ import WorkoutScreen from './screens/WorkoutScreen';
 import GoalScreen from './screens/GoalScreen';
 import CalorieScreen from './screens/CalorieScreen';
 import RegistrationScreen from './screens/RegistrationScreen';
+import MainScreen from './screens/MainScreen';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// Tab navigator for main screens
 function MainTabs() {
   return (
     <Tab.Navigator
-      initialRouteName="Calorie"
       screenOptions={({ navigation }) => ({
-        headerShown: true,
         headerRight: () => (
           <Button
             onPress={() => {
@@ -36,6 +34,7 @@ function MainTabs() {
         },
       })}
     >
+      <Tab.Screen name="Home" component={MainScreen} />
       <Tab.Screen name="Calorie" component={CalorieScreen} />
       <Tab.Screen name="Workout" component={WorkoutScreen} />
       <Tab.Screen name="Goal" component={GoalScreen} />
@@ -52,7 +51,7 @@ export default function App() {
       >
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Registration" component={RegistrationScreen} />
-        <Stack.Screen name="Main" component={MainTabs} />
+        <Stack.Screen name="MainTabs" component={MainTabs} />
       </Stack.Navigator>
     </NavigationContainer>
   );

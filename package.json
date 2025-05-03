@@ -1,7 +1,7 @@
 {
   "name": "fitapp",
   "version": "1.0.0",
-  "main": "frontend/index.js",
+  "main": "frontend/index.jsx",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",

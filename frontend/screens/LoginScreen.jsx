@@ -39,7 +39,7 @@ export default function LoginScreen({ navigation }) {
       if (response.ok) {
         if (data.success) {
           console.log('Login successful');
-          navigation.replace('Main');
+          navigation.replace('MainTabs');
         } else {
           console.log('Login failed:', data.message);
           setError(data.message || 'Login failed');

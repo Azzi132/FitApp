@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button, StyleSheet } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TouchableWithoutFeedback, Keyboard } from "react-native";
-import { KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 
 export default function GoalScreen() {
-  const [stepGoal, setStepGoal] = useState("");
-  const [savedStepGoal, setSavedStepGoal] = useState("");
+  const [stepGoal, setStepGoal] = useState('');
+  const [savedStepGoal, setSavedStepGoal] = useState('');
 
-  const [calorieGoal, setCalorieGoal] = useState("");
-  const [savedCalorieGoal, setSavedCalorieGoal] = useState("");
+  const [calorieGoal, setCalorieGoal] = useState('');
+  const [savedCalorieGoal, setSavedCalorieGoal] = useState('');
 
-  const [runningGoal, setRunningGoal] = useState("");
-  const [savedRunningGoal, setSavedRunningGoal] = useState("");
+  const [runningGoal, setRunningGoal] = useState('');
+  const [savedRunningGoal, setSavedRunningGoal] = useState('');
 
   const [currentSteps, setCurrentSteps] = useState(2500);
   const [currentCalories, setCurrentCalories] = useState(1000);
@@ -24,45 +24,45 @@ export default function GoalScreen() {
 
   const loadStepGoal = async () => {
     try {
-      const value = await AsyncStorage.getItem("@step_goal");
+      const value = await AsyncStorage.getItem('@step_goal');
       if (value !== null) {
         setSavedStepGoal(value);
       }
 
-      const calorieValue = await AsyncStorage.getItem("@calorie_goal");
+      const calorieValue = await AsyncStorage.getItem('@calorie_goal');
       if (calorieValue !== null) {
         setSavedCalorieGoal(calorieValue);
       }
 
-      const runningValue = await AsyncStorage.getItem("@running_goal");
+      const runningValue = await AsyncStorage.getItem('@running_goal');
       if (runningValue !== null) {
         setSavedRunningGoal(runningValue);
       }
     } catch (error) {
-      console.error("Error loading step goal:", error);
+      console.error('Error loading step goal:', error);
     }
   };
 
   const saveStepGoal = async () => {
     try {
-      await AsyncStorage.setItem("@step_goal", stepGoal);
-      await AsyncStorage.setItem("@calorie_goal", calorieGoal);
-      await AsyncStorage.setItem("@running_goal", runningGoal);
+      await AsyncStorage.setItem('@step_goal', stepGoal);
+      await AsyncStorage.setItem('@calorie_goal', calorieGoal);
+      await AsyncStorage.setItem('@running_goal', runningGoal);
       setSavedStepGoal(stepGoal);
       setSavedCalorieGoal(calorieGoal);
       setSavedRunningGoal(runningGoal);
-      setStepGoal("");
-      setCalorieGoal("");
-      setRunningGoal("");
+      setStepGoal('');
+      setCalorieGoal('');
+      setRunningGoal('');
     } catch (error) {
-      console.error("Error saving goals", error);
+      console.error('Error saving goals', error);
     }
   };
 
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.container}>
@@ -97,7 +97,7 @@ export default function GoalScreen() {
 
           <Button title="Save Goals" onPress={saveStepGoal} />
 
-          {savedStepGoal !== "" && (
+          {savedStepGoal !== '' && (
             <>
               <Text style={styles.saved}>
                 Saved Step Goal: {savedStepGoal} Steps
@@ -108,7 +108,7 @@ export default function GoalScreen() {
             </>
           )}
 
-          {savedCalorieGoal !== "" && (
+          {savedCalorieGoal !== '' && (
             <>
               <Text style={styles.saved}>
                 Saved Calorie Goal: {savedCalorieGoal} Kcal
@@ -119,7 +119,7 @@ export default function GoalScreen() {
             </>
           )}
 
-          {savedRunningGoal !== "" && (
+          {savedRunningGoal !== '' && (
             <>
               <Text style={styles.saved}>
                 Saved Running Goal: {savedRunningGoal} Km
@@ -138,57 +138,57 @@ export default function GoalScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 24,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   header: {
     fontSize: 28,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 32,
   },
   trackerBox: {
-    width: "100%",
+    width: '100%',
     marginBottom: 32,
     padding: 20,
     borderRadius: 12,
-    backgroundColor: "#f2f2f2",
-    alignItems: "flex-start",
+    backgroundColor: '#f2f2f2',
+    alignItems: 'flex-start',
   },
   label: {
     fontSize: 18,
     marginBottom: 8,
   },
   value: {
-    fontWeight: "bold",
-    color: "#007AFF",
+    fontWeight: 'bold',
+    color: '#007AFF',
   },
   inputRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
   },
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: '#ccc',
     borderRadius: 8,
     padding: 10,
     marginBottom: 20,
     fontSize: 16,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     height: 44,
   },
   subHeader: {
     fontSize: 20,
-    fontWeight: "600",
+    fontWeight: '600',
     marginBottom: 10,
     marginTop: 20,
   },
   progress: {
     fontSize: 16,
-    color: "#555",
+    color: '#555',
     marginTop: 4,
     marginBottom: 10,
   },

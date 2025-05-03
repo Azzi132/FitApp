@@ -13,16 +13,16 @@ export default function MainScreen({ navigation }) {
       </View>
 
       <View style={styles.buttonGroup}>
-        <Button title="Goals" onPress={() => navigation.navigate('TabsGoal')} />
+        <Button title="Goals" onPress={() => navigation.navigate('Goal')} />
         <Button
           title="Workouts"
-          onPress={() => navigation.navigate('TabsWorkout')}
+          onPress={() => navigation.navigate('Workout')}
         />
         <Button
           title="Calories"
-          onPress={() => navigation.navigate('TabsCalorie')}
+          onPress={() => navigation.navigate('Calorie')}
         />
-        <Button title="Chat" onPress={() => navigation.navigate('TabsChat')} />
+        <Button title="Chat" onPress={() => navigation.navigate('Chat')} />
       </View>
     </View>
   );
