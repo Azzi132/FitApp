@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
@@ -64,132 +71,184 @@ export default function GoalScreen() {
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <View style={styles.container}>
-          <Text style={styles.header}>Set your Daily Goals</Text>
-          <Text style={styles.subheader}>Set Your Step Goal</Text>
+      <ScrollView style={styles.scrollView}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.container}>
+            <Text style={styles.header}>Daily Goals</Text>
 
-          <TextInput
-            style={styles.input}
-            placeholder="e.g. 10000"
-            keyboardType="numeric"
-            value={stepGoal}
-            onChangeText={setStepGoal}
-          />
+            <View style={styles.section}>
+              <Text style={styles.subheader}>Steps</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Set daily step goal (e.g. 10000)"
+                keyboardType="numeric"
+                value={stepGoal}
+                onChangeText={setStepGoal}
+              />
+              {savedStepGoal !== '' && (
+                <View style={styles.progressContainer}>
+                  <Text style={styles.progressLabel}>
+                    {currentSteps} / {savedStepGoal}
+                  </Text>
+                  <View style={styles.progressBar}>
+                    <View
+                      style={[
+                        styles.progressFill,
+                        {
+                          width: `${Math.min(
+                            (currentSteps / savedStepGoal) * 100,
+                            100
+                          )}%`,
+                        },
+                      ]}
+                    />
+                  </View>
+                </View>
+              )}
+            </View>
 
-          <Text style={styles.subheader}>Set Your Calorie Goal</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Calories to burn (e.g. 500)"
-            keyboardType="numeric"
-            value={calorieGoal}
-            onChangeText={setCalorieGoal}
-          />
+            <View style={styles.section}>
+              <Text style={styles.subheader}>Calories</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Set calorie goal (e.g. 500)"
+                keyboardType="numeric"
+                value={calorieGoal}
+                onChangeText={setCalorieGoal}
+              />
+              {savedCalorieGoal !== '' && (
+                <View style={styles.progressContainer}>
+                  <Text style={styles.progressLabel}>
+                    {currentCalories} / {savedCalorieGoal} kcal
+                  </Text>
+                  <View style={styles.progressBar}>
+                    <View
+                      style={[
+                        styles.progressFill,
+                        {
+                          width: `${Math.min(
+                            (currentCalories / savedCalorieGoal) * 100,
+                            100
+                          )}%`,
+                        },
+                      ]}
+                    />
+                  </View>
+                </View>
+              )}
+            </View>
 
-          <Text style={styles.subheader}>Set Your Running Goal</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="ex. 5"
-            keyboardType="numeric"
-            value={runningGoal}
-            onChangeText={setRunningGoal}
-          />
+            <View style={styles.section}>
+              <Text style={styles.subheader}>Running</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Set running goal in km (e.g. 5)"
+                keyboardType="numeric"
+                value={runningGoal}
+                onChangeText={setRunningGoal}
+              />
+              {savedRunningGoal !== '' && (
+                <View style={styles.progressContainer}>
+                  <Text style={styles.progressLabel}>
+                    {currentRunning} / {savedRunningGoal} km
+                  </Text>
+                  <View style={styles.progressBar}>
+                    <View
+                      style={[
+                        styles.progressFill,
+                        {
+                          width: `${Math.min(
+                            (currentRunning / savedRunningGoal) * 100,
+                            100
+                          )}%`,
+                        },
+                      ]}
+                    />
+                  </View>
+                </View>
+              )}
+            </View>
 
-          <Button title="Save Goals" onPress={saveStepGoal} />
-
-          {savedStepGoal !== '' && (
-            <>
-              <Text style={styles.saved}>
-                Saved Step Goal: {savedStepGoal} Steps
-              </Text>
-              <Text style={styles.progress}>
-                Progress: {currentSteps} / {savedStepGoal || 0} Steps
-              </Text>
-            </>
-          )}
-
-          {savedCalorieGoal !== '' && (
-            <>
-              <Text style={styles.saved}>
-                Saved Calorie Goal: {savedCalorieGoal} Kcal
-              </Text>
-              <Text style={styles.progress}>
-                Progress: {currentCalories} / {savedCalorieGoal || 0} Kcal
-              </Text>
-            </>
-          )}
-
-          {savedRunningGoal !== '' && (
-            <>
-              <Text style={styles.saved}>
-                Saved Running Goal: {savedRunningGoal} Km
-              </Text>
-              <Text style={styles.progress}>
-                Progress: {currentRunning} / {savedRunningGoal || 0} Km
-              </Text>
-            </>
-          )}
-        </View>
-      </TouchableWithoutFeedback>
+            <TouchableOpacity style={styles.saveButton} onPress={saveStepGoal}>
+              <Text style={styles.saveButtonText}>Save Goals</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableWithoutFeedback>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-    backgroundColor: '#fff',
+    padding: 20,
+    paddingTop: 40,
   },
   header: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 32,
+    marginBottom: 30,
+    color: '#333',
   },
-  trackerBox: {
-    width: '100%',
-    marginBottom: 32,
-    padding: 20,
+  section: {
+    backgroundColor: '#fff',
     borderRadius: 12,
-    backgroundColor: '#f2f2f2',
-    alignItems: 'flex-start',
+    padding: 16,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  label: {
+  subheader: {
     fontSize: 18,
-    marginBottom: 8,
-  },
-  value: {
-    fontWeight: 'bold',
-    color: '#007AFF',
-  },
-  inputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
+    fontWeight: '600',
+    marginBottom: 12,
+    color: '#444',
   },
   input: {
-    flex: 1,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#e0e0e0',
     borderRadius: 8,
-    padding: 10,
-    marginBottom: 20,
+    padding: 12,
     fontSize: 16,
     backgroundColor: '#fff',
-    height: 44,
   },
-  subHeader: {
-    fontSize: 20,
-    fontWeight: '600',
-    marginBottom: 10,
-    marginTop: 20,
+  progressContainer: {
+    marginTop: 12,
   },
-  progress: {
+  progressLabel: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 6,
+  },
+  progressBar: {
+    height: 6,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 3,
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: '#007AFF',
+    borderRadius: 3,
+  },
+  saveButton: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  saveButtonText: {
+    color: '#fff',
     fontSize: 16,
-    color: '#555',
-    marginTop: 4,
-    marginBottom: 10,
+    fontWeight: '600',
   },
 });
