@@ -14,21 +14,7 @@ if (!url) {
 }
 const dbName = 'FitAppBackend';
 
-router.get('/', async (req, res) => {
-  try {
-    const client = await MongoClient.connect(url);
-    const db = client.db(dbName);
-    const users = await db.collection('Users').find({}).toArray();
-
-    await client.close();
-    res.status(200).json(users);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: 'Error fetching users', error: error.message });
-  }
-});
-
+// Login with a user
 router.post('/login', async (req, res) => {
   let client;
   try {
@@ -49,7 +35,6 @@ router.post('/login', async (req, res) => {
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (passwordMatch) {
-      // Don't send password back to client
       const { password: _, ...userWithoutPassword } = user;
       res.status(200).json({ success: true, user: userWithoutPassword });
     } else {
@@ -63,6 +48,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Register a new user
 router.post('/register', async (req, res) => {
   let client;
   try {

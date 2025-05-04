@@ -7,6 +7,7 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from 'react-native';
+import { storeUserData } from '../utils/auth';
 
 export default function LoginScreen({ navigation }) {
   const [username, setUsername] = useState('');
@@ -36,20 +37,14 @@ export default function LoginScreen({ navigation }) {
       const data = await response.json();
       console.log('Response data:', data);
 
-      if (response.ok) {
-        if (data.success) {
-          console.log('Login successful');
-          navigation.replace('MainTabs');
-        } else {
-          console.log('Login failed:', data.message);
-          setError(data.message || 'Login failed');
-        }
+      if (response.ok && data.success) {
+        await storeUserData(data.user);
+        navigation.replace('Main');
       } else {
-        console.log('HTTP error:', response.status, data);
-        setError(data.message || `Error: ${response.status}`);
+        setError(data.message || 'Login failed');
       }
     } catch (err) {
-      console.log('Error details:', err);
+      console.error('Login error:', err);
       setError('Network error. Please try again.');
     } finally {
       setLoading(false);

@@ -28,16 +28,10 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-// Request logging
-app.use((req, res, next) => {
-  console.log(`${req.method} ${req.url}`);
-  next();
-});
-
 app.use('/users', usersRouter);
 app.use('/calories', caloriesRouter);
-app.use('/goals', goalsRouter);
 app.use('/workouts', workoutsRouter);
+app.use('/goals', goalsRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Not Found' });

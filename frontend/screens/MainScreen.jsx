@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+
+const CustomButton = ({ title, onPress }) => (
+  <TouchableOpacity style={styles.button} onPress={onPress}>
+    <Text style={styles.buttonText}>{title}</Text>
+  </TouchableOpacity>
+);
 
 export default function MainScreen({ navigation }) {
   return (
@@ -13,16 +15,22 @@ export default function MainScreen({ navigation }) {
       </View>
 
       <View style={styles.buttonGroup}>
-        <Button title="Goals" onPress={() => navigation.navigate('Goal')} />
-        <Button
-          title="Workouts"
-          onPress={() => navigation.navigate('Workout')}
-        />
-        <Button
+        <CustomButton
           title="Calories"
           onPress={() => navigation.navigate('Calorie')}
         />
-        <Button title="Chat" onPress={() => navigation.navigate('Chat')} />
+        <CustomButton
+          title="Workouts"
+          onPress={() => navigation.navigate('Workout')}
+        />
+        <CustomButton
+          title="Goals"
+          onPress={() => navigation.navigate('Goal')}
+        />
+        <CustomButton
+          title="Chat"
+          onPress={() => navigation.navigate('Chat')}
+        />
       </View>
     </View>
   );
@@ -36,7 +44,7 @@ const styles = StyleSheet.create({
   header: {
     marginTop: 30,
     alignItems: 'center',
-    marginBottom: 2,
+    marginBottom: 20,
   },
   title: {
     fontSize: 36,
@@ -46,6 +54,19 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 10,
+    gap: 20,
+    paddingHorizontal: 20,
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    width: '100%',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });
