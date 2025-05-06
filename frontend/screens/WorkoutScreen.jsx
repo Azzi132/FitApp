@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,19 +6,19 @@ import {
   TextInput,
   Button,
   FlatList,
-} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function WorkoutScreen() {
   const [workouts, setWorkouts] = useState([]);
-  const [name, setName] = useState('');
-  const [reps, setReps] = useState('');
-  const [time, setTime] = useState('');
+  const [name, setName] = useState("");
+  const [reps, setReps] = useState("");
+  const [time, setTime] = useState("");
 
   useEffect(() => {
     const loadWorkouts = async () => {
       try {
-        const data = await AsyncStorage.getItem('workouts');
+        const data = await AsyncStorage.getItem("workouts");
         if (data) setWorkouts(JSON.parse(data));
       } catch (e) {}
     };
@@ -26,15 +26,15 @@ export default function WorkoutScreen() {
   }, []);
 
   useEffect(() => {
-    AsyncStorage.setItem('workouts', JSON.stringify(workouts));
+    AsyncStorage.setItem("workouts", JSON.stringify(workouts));
   }, [workouts]);
 
   const addWorkout = () => {
     if (!name || !reps || !time) return;
     setWorkouts([...workouts, { id: Date.now().toString(), name, reps, time }]);
-    setName('');
-    setReps('');
-    setTime('');
+    setName("");
+    setReps("");
+    setTime("");
   };
 
   return (
@@ -82,19 +82,19 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     paddingTop: 250,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#fff",
+    justifyContent: "center",
+    alignItems: "center",
   },
   header: {
     fontSize: 22,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 6,
     padding: 8,
     marginBottom: 10,
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
   workoutItem: {
     padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: "#eee",
   },
   workoutText: {
     fontSize: 16,

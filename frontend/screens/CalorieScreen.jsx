@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,16 +7,16 @@ import {
   Button,
   TouchableOpacity,
   Modal,
-} from 'react-native';
-import CircularProgress from '../components/CircularProgress';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { getUserData } from '../utils/auth';
-import { isValidNumber } from '../utils/validation';
+} from "react-native";
+import CircularProgress from "../components/CircularProgress";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { getUserData } from "../utils/auth";
+import { isValidNumber } from "../utils/validation";
 import {
   handleAddCalories,
   handleRemoveCalories,
   handleGoalUpdate,
-} from '../utils/calorieHandlers';
+} from "../utils/calorieHandlers";
 
 export default function CalorieScreen() {
   // Frontend data
@@ -32,9 +32,9 @@ export default function CalorieScreen() {
   const [burnedSteps, setBurnedSteps] = useState(0);
 
   // User input data
-  const [addCalories, setAddCalories] = useState('');
-  const [removeCalories, setRemoveCalories] = useState('');
-  const [tempGoal, setTempGoal] = useState('');
+  const [addCalories, setAddCalories] = useState("");
+  const [removeCalories, setRemoveCalories] = useState("");
+  const [tempGoal, setTempGoal] = useState("");
 
   useEffect(() => {
     const loadDataAndUser = async () => {
@@ -44,7 +44,7 @@ export default function CalorieScreen() {
       setUserId(currentUserId);
 
       try {
-        const dateStr = selectedDate.toISOString().split('T')[0];
+        const dateStr = selectedDate.toISOString().split("T")[0];
         const response = await fetch(
           `http://10.0.2.2:3000/calories/${dateStr}/${currentUserId}`
         );
@@ -70,7 +70,7 @@ export default function CalorieScreen() {
           );
         }
       } catch (error) {
-        console.error('Failed to load data:', error);
+        console.error("Failed to load data:", error);
       }
     };
 
@@ -80,14 +80,14 @@ export default function CalorieScreen() {
   const saveCalorieData = async (updates) => {
     if (!userId) return false;
 
-    const dateStr = selectedDate.toISOString().split('T')[0];
+    const dateStr = selectedDate.toISOString().split("T")[0];
     try {
       const response = await fetch(
         `http://10.0.2.2:3000/calories/${dateStr}/${userId}`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             dailyGoal: totalDailyGoal,
@@ -100,13 +100,13 @@ export default function CalorieScreen() {
       );
 
       if (!response.ok) {
-        console.error('Failed to save calorie data:', await response.text());
+        console.error("Failed to save calorie data:", await response.text());
         return false;
       }
 
       return true;
     } catch (error) {
-      console.error('Error saving calorie data:', error);
+      console.error("Error saving calorie data:", error);
       return false;
     }
   };
@@ -158,11 +158,11 @@ export default function CalorieScreen() {
       <View style={styles.progressContainer}>
         <TouchableOpacity onPress={() => setShowDatePicker(true)}>
           <Text style={[styles.dateText, styles.clickableText]}>
-            {selectedDate.toLocaleDateString('en-US', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
+            {selectedDate.toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
             })}
           </Text>
         </TouchableOpacity>
@@ -270,97 +270,97 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   progressContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 30,
   },
   dateText: {
     fontSize: 18,
-    fontWeight: '500',
-    color: '#333',
+    fontWeight: "500",
+    color: "#333",
     marginBottom: 15,
   },
   statsContainer: {
-    width: '100%',
+    width: "100%",
     marginTop: 20,
   },
   statItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: '#E8E8E8',
+    borderBottomColor: "#E8E8E8",
   },
   statLabel: {
     fontSize: 16,
-    color: '#666',
+    color: "#666",
   },
   statValue: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   iconTextContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
   },
   inputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
   },
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 8,
     padding: 12,
     marginRight: 10,
     fontSize: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     height: 50,
-    color: '#000',
+    color: "#000",
   },
   clickableText: {
-    textDecorationLine: 'underline',
+    textDecorationLine: "underline",
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 20,
     borderRadius: 10,
-    width: '80%',
+    width: "80%",
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 15,
-    textAlign: 'center',
+    textAlign: "center",
   },
   modalInput: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 8,
     padding: 12,
     marginBottom: 15,
     fontSize: 16,
   },
   modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    justifyContent: "space-around",
   },
   breakdownText: {
     fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
+    color: "#666",
+    textAlign: "center",
     marginBottom: 5,
   },
 });
