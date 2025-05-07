@@ -1,8 +1,6 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-const API_KEY = process.env.OPENROUTER_API_KEY;
+const API_KEY =
+  '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';
 
 export const sendMessage = async (message) => {
   try {
