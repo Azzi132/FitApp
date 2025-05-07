@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// Stores user data in AsyncStorage
 export const storeUserData = async (userData) => {
   try {
     await AsyncStorage.setItem('userData', JSON.stringify(userData));
@@ -10,6 +11,7 @@ export const storeUserData = async (userData) => {
   }
 };
 
+// Retrieves user data from AsyncStorage
 export const getUserData = async () => {
   try {
     const userData = await AsyncStorage.getItem('userData');
@@ -20,6 +22,7 @@ export const getUserData = async () => {
   }
 };
 
+// Removes user data from AsyncStorage
 export const clearUserData = async () => {
   try {
     await AsyncStorage.removeItem('userData');

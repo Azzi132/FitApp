@@ -2,17 +2,19 @@ import dotenv from 'dotenv';
 import express from 'express';
 import usersRouter from './routes/users.js';
 import caloriesRouter from './routes/calories.js';
-import goalsRouter from './routes/goals.js';
 import workoutsRouter from './routes/workouts.js';
+import { connectMongoose } from './database/database.js';
 
 dotenv.config();
-
 console.log('MongoDB URI:', process.env.MONGODB_URI ? 'Found' : 'Not found');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// CORS middleware
+// Initialize MongoDB connection
+connectMongoose().catch(console.error);
+
+// Setup CORS middleware to allow cross-origin requests
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header(
@@ -26,12 +28,13 @@ app.use((req, res, next) => {
   next();
 });
 
+// Parse JSON request bodies
 app.use(express.json());
 
+// Setup routes
 app.use('/users', usersRouter);
 app.use('/calories', caloriesRouter);
 app.use('/workouts', workoutsRouter);
-app.use('/goals', goalsRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Not Found' });

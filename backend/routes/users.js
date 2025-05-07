@@ -1,39 +1,39 @@
 import express from 'express';
-import { MongoClient } from 'mongodb';
-import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
-
-dotenv.config();
+import { getMongoClient, dbName } from '../database/database.js';
 
 const router = express.Router();
-const SALT_ROUNDS = 10;
 
-const url = process.env.MONGODB_URI;
-if (!url) {
-  console.error('MONGODB_URI is not defined in environment variables');
-}
-const dbName = 'FitAppBackend';
+// Used for hashing passwords (data security)
+const SALT = 10;
 
-// Login with a user
+// Process user login
 router.post('/login', async (req, res) => {
   let client;
+
   try {
     const { username, password } = req.body;
-    client = await MongoClient.connect(url);
+
+    // Connect to database
+    client = await getMongoClient();
     const db = client.db(dbName);
 
+    // Search for user in database
     const user = await db.collection('Users').findOne({
       username: username.toLowerCase(),
     });
 
+    // If user doesn't exist, return error
     if (!user) {
       return res
         .status(401)
         .json({ success: false, message: 'Invalid credentials' });
     }
 
+    // Compare provided password with stored hash
     const passwordMatch = await bcrypt.compare(password, user.password);
 
+    // If password matches, return user data without also returning the password
     if (passwordMatch) {
       const { password: _, ...userWithoutPassword } = user;
       res.status(200).json({ success: true, user: userWithoutPassword });
@@ -48,22 +48,26 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Register a new user
+// Process new user registrations
 router.post('/register', async (req, res) => {
   let client;
   try {
+    // Get username and password that user entered
     const { username, password } = req.body;
 
+    // Make sure both username and password have been provided
     if (!username || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Username and password are required',
+        message: 'Username and password are required!',
       });
     }
 
-    client = await MongoClient.connect(url);
+    // Connect to MongoDB
+    client = await getMongoClient();
     const db = client.db(dbName);
 
+    // Check if username already exists
     const existingUser = await db.collection('Users').findOne({
       username: username.toLowerCase(),
     });
@@ -75,8 +79,10 @@ router.post('/register', async (req, res) => {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+    // Hash the password before storing (Secure by encrypting)
+    const hashedPassword = await bcrypt.hash(password, SALT);
 
+    // Create the user in the database
     await db.collection('Users').insertOne({
       username: username.toLowerCase(),
       password: hashedPassword,
