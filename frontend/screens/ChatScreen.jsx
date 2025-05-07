@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,30 +8,28 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
-} from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+} from 'react-native';
 
 export default function ChatScreen() {
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
 
   const handleSend = () => {
-    if (input.trim() === "") return;
+    if (input.trim() === '') return;
 
-    const userMessage = { text: input, sender: "user" };
+    const userMessage = { text: input, sender: 'user' };
     const aiMessage = {
-      text: "Dette er et AI-svar (dummy)",
-      sender: "ai",
+      text: 'Dette er et AI-svar (dummy)',
+      sender: 'ai',
     };
 
     setMessages((prev) => [...prev, userMessage, aiMessage]);
-    setInput("");
+    setInput('');
   };
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
       <ScrollView contentContainerStyle={styles.chatContainer}>
@@ -40,30 +38,30 @@ export default function ChatScreen() {
             key={index}
             style={[
               styles.messageWrapper,
-              msg.sender === "user"
-                ? { justifyContent: "flex-start" }
-                : { justifyContent: "flex-end" },
+              msg.sender === 'user'
+                ? { justifyContent: 'flex-start' }
+                : { justifyContent: 'flex-end' },
             ]}
           >
-            {msg.sender === "user" && (
+            {msg.sender === 'user' && (
               <View style={[styles.tail, styles.userTail]} />
             )}
             <View
               style={[
                 styles.messageBubble,
-                msg.sender === "user" ? styles.userBubble : styles.aiBubble,
+                msg.sender === 'user' ? styles.userBubble : styles.aiBubble,
               ]}
             >
               <Text
                 style={[
                   styles.messageText,
-                  msg.sender === "user" ? styles.userMessage : null,
+                  msg.sender === 'user' ? styles.userMessage : null,
                 ]}
               >
                 {msg.text}
               </Text>
             </View>
-            {msg.sender === "ai" && (
+            {msg.sender === 'ai' && (
               <View style={[styles.tail, styles.aiTail]} />
             )}
           </View>
@@ -88,85 +86,90 @@ export default function ChatScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f2f2f2",
+    backgroundColor: '#f2f2f2',
   },
   chatContainer: {
     padding: 12,
     paddingBottom: 80,
   },
   messageWrapper: {
-    flexDirection: "row",
-    alignItems: "flex-end",
+    flexDirection: 'row',
+    alignItems: 'flex-end',
     marginVertical: 4,
   },
   messageBubble: {
     padding: 10,
     borderRadius: 12,
     marginVertical: 4,
-    maxWidth: "75%",
+    maxWidth: '75%',
   },
   userBubble: {
-    backgroundColor: "#007aff",
-    alignSelf: "flex-start",
+    backgroundColor: '#007aff',
+    alignSelf: 'flex-start',
   },
   aiBubble: {
-    backgroundColor: "#8c8f94",
-    alignSelf: "flex-end",
+    backgroundColor: '#8c8f94',
+    alignSelf: 'flex-end',
   },
   messageText: {
-    color: "#000",
+    color: '#fff', // Changed from #000 to #fff for better visibility
+  },
+  userMessage: {
+    color: '#fff',
+  },
+  aiMessage: {
+    color: '#fff',
   },
   inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 10,
     paddingVertical: 8,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     borderTopWidth: 1,
-    borderColor: "#ddd",
-    position: "absolute",
-    bottom: Platform.OS === "ios" ? 20 : 10,
-    width: "100%",
+    borderColor: '#ddd',
+    position: 'absolute',
+    bottom: Platform.OS === 'ios' ? 20 : 10,
+    width: '100%',
   },
   input: {
     flex: 1,
-    backgroundColor: "#f2f2f2",
+    backgroundColor: '#f2f2f2',
     borderRadius: 25,
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 16,
     marginRight: 10,
-    color: "#000",
+    color: '#000',
   },
   sendButton: {
-    backgroundColor: "#007aff",
+    backgroundColor: '#007aff',
     borderRadius: 25,
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
   sendText: {
-    color: "#fff",
-    fontWeight: "bold",
+    color: '#fff',
+    fontWeight: 'bold',
     fontSize: 16,
   },
   tail: {
     width: 0,
     height: 0,
     borderTopWidth: 10,
-    borderTopColor: "transparent",
-    borderTopWidth: 10,
-    borderTopColor: "transparent",
-    alignSelf: "flex-end",
+    borderTopColor: 'transparent',
+    // Removed duplicate properties
+    alignSelf: 'flex-end',
     marginBottom: 4,
   },
   aiTail: {
     borderLeftWidth: 10,
-    borderLeftColor: "#8c8f94",
+    borderLeftColor: '#8c8f94',
     marginLeft: -10,
   },
   userTail: {
     borderRightWidth: 10,
-    borderRightColor: "#007aff",
+    borderRightColor: '#007aff',
     marginRight: -10,
   },
 });

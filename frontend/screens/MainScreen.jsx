@@ -5,7 +5,6 @@ import CustomButton from '../components/CustomButton';
 export default function MainScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      // Header section containing app title and subtitle
       <View style={styles.header}>
         <Text style={styles.title}>Fit App</Text>
         <Text style={styles.subtitle}>Your Personal Fitness Companion</Text>

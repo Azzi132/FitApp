@@ -16,10 +16,11 @@ export default function CircularProgress({
   const circumference = radius * 2 * Math.PI;
   const progressValue = (value / maxValue) * circumference;
 
-  const remainingPercentage = 100 - percentage; // CalorieSCreen
-  const percentage = Math.round((value / maxValue) * 100); // WorkoutScreen
+  // Calculate percentage first, then remaining
+  const percentage = Math.round((value / maxValue) * 100);
+  const remainingPercentage = Math.max(0, 100 - percentage);
 
-  // Set remaining percentage / percentage until goal hit
+  // Get display value based on format and reverse flag
   const getDisplayValue = () => {
     if (labelFormat === 'percentage') {
       return reversePercentage ? remainingPercentage : percentage;
