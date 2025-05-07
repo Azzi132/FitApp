@@ -3,14 +3,37 @@ import { View, Text, StyleSheet } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 
 export default function CircularProgress({
-  value,
-  maxValue,
-  size = 200,
-  strokeWidth = 15,
+  value, // Current progress value
+  maxValue, // Max value
+  size = 200, // Size of circle
+  strokeWidth = 15, // How thick circle is
+  textSize = 40, // Size of the text in the middle of the circle
+  labelFormat = 'remaining', // Text under the number in the middle of the circle
+  reversePercentage = false, // True in workoutScreen to show much left until goal is hit
 }) {
+  // Calculate the dimensions and progress values
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
   const progressValue = (value / maxValue) * circumference;
+
+  const remainingPercentage = 100 - percentage; // CalorieSCreen
+  const percentage = Math.round((value / maxValue) * 100); // WorkoutScreen
+
+  // Set remaining percentage / percentage until goal hit
+  const getDisplayValue = () => {
+    if (labelFormat === 'percentage') {
+      return reversePercentage ? remainingPercentage : percentage;
+    }
+    return value;
+  };
+
+  // Get the label text that appears below the value
+  const getLabel = () => {
+    if (labelFormat === 'percentage') {
+      return 'until goal hit';
+    }
+    return 'remaining';
+  };
 
   return (
     <View style={styles.container}>
@@ -37,8 +60,13 @@ export default function CircularProgress({
         />
       </Svg>
       <View style={styles.textContainer}>
-        <Text style={styles.valueText}>{value}</Text>
-        <Text style={styles.labelText}>Remaining</Text>
+        <Text style={[styles.valueText, { fontSize: textSize }]}>
+          {getDisplayValue()}
+          {labelFormat === 'percentage' ? '%' : ''}
+        </Text>
+        <Text style={[styles.labelText, { fontSize: textSize * 0.4 }]}>
+          {getLabel()}
+        </Text>
       </View>
     </View>
   );

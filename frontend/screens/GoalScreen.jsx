@@ -2,69 +2,158 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  TextInput,
-  Button,
   StyleSheet,
   TouchableOpacity,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { getUserData } from '../handlers/authHandlers';
+import GoalInputCard from '../components/GoalInputCard';
 
 export default function GoalScreen() {
-  const [stepGoal, setStepGoal] = useState('');
-  const [savedStepGoal, setSavedStepGoal] = useState('');
+  const [goals, setGoals] = useState({
+    calories: '',
+    cardio: '',
+    power: '',
+    steps: '',
+  });
 
-  const [calorieGoal, setCalorieGoal] = useState('');
-  const [savedCalorieGoal, setSavedCalorieGoal] = useState('');
+  const [savedGoals, setSavedGoals] = useState({
+    calories: '',
+    cardio: '',
+    power: '',
+    steps: '',
+  });
 
-  const [runningGoal, setRunningGoal] = useState('');
-  const [savedRunningGoal, setSavedRunningGoal] = useState('');
-
-  const [currentSteps, setCurrentSteps] = useState(2500);
-  const [currentCalories, setCurrentCalories] = useState(1000);
-  const [currentRunning, setCurrentRunning] = useState(3.5);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
-    loadStepGoal();
-  }, []);
+    const loadUserAndGoals = async () => {
+      const userData = await getUserData();
+      if (!userData || !userData._id) return;
+      setUserId(userData._id);
 
-  const loadStepGoal = async () => {
+      try {
+        // Set date to start of current day for consistency
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const calorieResponse = await fetch(
+          `http://10.0.2.2:3000/calories/${today.toISOString()}/${userData._id}`
+        );
+
+        const workoutResponse = await fetch(
+          `http://10.0.2.2:3000/workouts/${userData._id}/${today.toISOString()}`
+        );
+
+        const calorieData = await calorieResponse.json();
+        const workoutData = await workoutResponse.json();
+
+        // Update the saved goals state with fetched data
+        setSavedGoals({
+          calories: calorieData?.dailyGoal?.toString() || '',
+          cardio: workoutData?.cardio?.goal?.toString() || '',
+          power: workoutData?.power?.goal?.toString() || '',
+          steps: workoutData?.steps?.goal?.toString() || '',
+        });
+      } catch (error) {
+        console.error('Error loading goals:', error);
+      }
+    };
+
+    loadUserAndGoals();
+  }, []); // Run once when component mounts
+
+  // Function to save new goals to the server
+  const saveGoals = async () => {
+    if (!userId) return;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
     try {
-      const value = await AsyncStorage.getItem('@step_goal');
-      if (value !== null) {
-        setSavedStepGoal(value);
+      // Save calorie goal if provided
+      if (goals.calories) {
+        await fetch(
+          `http://10.0.2.2:3000/calories/${today.toISOString()}/${userId}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              dailyGoal: parseInt(goals.calories, 10),
+            }),
+          }
+        );
       }
 
-      const calorieValue = await AsyncStorage.getItem('@calorie_goal');
-      if (calorieValue !== null) {
-        setSavedCalorieGoal(calorieValue);
+      // Prepare workout goals object
+      const workoutGoals = {
+        dailyCardioGoal: goals.cardio ? parseInt(goals.cardio, 10) : undefined,
+        dailyPowerGoal: goals.power ? parseInt(goals.power, 10) : undefined,
+        dailyStepGoal: goals.steps ? parseInt(goals.steps, 10) : undefined,
+      };
+
+      // Save workout goals if any are provided
+      if (Object.values(workoutGoals).some((value) => value !== undefined)) {
+        await fetch(
+          `http://10.0.2.2:3000/workouts/${userId}/${today.toISOString()}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ workoutData: workoutGoals }),
+          }
+        );
       }
 
-      const runningValue = await AsyncStorage.getItem('@running_goal');
-      if (runningValue !== null) {
-        setSavedRunningGoal(runningValue);
-      }
+      // Update local state with new saved goals
+      setSavedGoals({
+        calories: goals.calories || savedGoals.calories,
+        cardio: goals.cardio || savedGoals.cardio,
+        power: goals.power || savedGoals.power,
+        steps: goals.steps || savedGoals.steps,
+      });
+
+      // Clear input fields after saving
+      setGoals({ calories: '', cardio: '', power: '', steps: '' });
     } catch (error) {
-      console.error('Error loading step goal:', error);
+      console.error('Error saving goals:', error);
     }
   };
 
-  const saveStepGoal = async () => {
-    try {
-      await AsyncStorage.setItem('@step_goal', stepGoal);
-      await AsyncStorage.setItem('@calorie_goal', calorieGoal);
-      await AsyncStorage.setItem('@running_goal', runningGoal);
-      setSavedStepGoal(stepGoal);
-      setSavedCalorieGoal(calorieGoal);
-      setSavedRunningGoal(runningGoal);
-      setStepGoal('');
-      setCalorieGoal('');
-      setRunningGoal('');
-    } catch (error) {
-      console.error('Error saving goals', error);
-    }
-  };
+  // Configuration for goal input fields
+  const goalInputs = [
+    {
+      title: 'Daily Calories',
+      key: 'calories',
+      unit: 'kcal',
+      placeholder: 'Enter calorie goal',
+      icon: 'food-apple',
+    },
+    {
+      title: 'Cardio Exercise',
+      key: 'cardio',
+      unit: 'min',
+      placeholder: 'Enter cardio minutes',
+      icon: 'run',
+    },
+    {
+      title: 'Power Training',
+      key: 'power',
+      unit: 'min',
+      placeholder: 'Enter training minutes',
+      icon: 'dumbbell',
+    },
+    {
+      title: 'Daily Steps',
+      key: 'steps',
+      unit: 'steps',
+      placeholder: 'Enter step goal',
+      icon: 'walk',
+    },
+  ];
 
   return (
     <KeyboardAvoidingView
@@ -74,103 +163,27 @@ export default function GoalScreen() {
       <ScrollView style={styles.scrollView}>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.container}>
-            <Text style={styles.header}>Daily Goals</Text>
-
-            <View style={styles.section}>
-              <Text style={styles.subheader}>Steps</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Set daily step goal (e.g. 10000)"
-                keyboardType="numeric"
-                value={stepGoal}
-                onChangeText={setStepGoal}
+            <Text style={styles.header}>Set Your Goals</Text>
+            {goalInputs.map((input) => (
+              <GoalInputCard
+                key={input.key}
+                title={input.title}
+                value={goals[input.key]}
+                onChangeText={(value) =>
+                  setGoals((prev) => ({ ...prev, [input.key]: value }))
+                }
+                unit={input.unit}
+                placeholder={input.placeholder}
+                icon={input.icon}
               />
-              {savedStepGoal !== '' && (
-                <View style={styles.progressContainer}>
-                  <Text style={styles.progressLabel}>
-                    {currentSteps} / {savedStepGoal}
-                  </Text>
-                  <View style={styles.progressBar}>
-                    <View
-                      style={[
-                        styles.progressFill,
-                        {
-                          width: `${Math.min(
-                            (currentSteps / savedStepGoal) * 100,
-                            100
-                          )}%`,
-                        },
-                      ]}
-                    />
-                  </View>
-                </View>
-              )}
-            </View>
-
-            <View style={styles.section}>
-              <Text style={styles.subheader}>Calories</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Set calorie goal (e.g. 500)"
-                keyboardType="numeric"
-                value={calorieGoal}
-                onChangeText={setCalorieGoal}
+            ))}
+            <TouchableOpacity style={styles.saveButton} onPress={saveGoals}>
+              <MaterialCommunityIcons
+                name="content-save"
+                size={24}
+                color="#fff"
               />
-              {savedCalorieGoal !== '' && (
-                <View style={styles.progressContainer}>
-                  <Text style={styles.progressLabel}>
-                    {currentCalories} / {savedCalorieGoal} kcal
-                  </Text>
-                  <View style={styles.progressBar}>
-                    <View
-                      style={[
-                        styles.progressFill,
-                        {
-                          width: `${Math.min(
-                            (currentCalories / savedCalorieGoal) * 100,
-                            100
-                          )}%`,
-                        },
-                      ]}
-                    />
-                  </View>
-                </View>
-              )}
-            </View>
-
-            <View style={styles.section}>
-              <Text style={styles.subheader}>Running</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Set running goal in km (e.g. 5)"
-                keyboardType="numeric"
-                value={runningGoal}
-                onChangeText={setRunningGoal}
-              />
-              {savedRunningGoal !== '' && (
-                <View style={styles.progressContainer}>
-                  <Text style={styles.progressLabel}>
-                    {currentRunning} / {savedRunningGoal} km
-                  </Text>
-                  <View style={styles.progressBar}>
-                    <View
-                      style={[
-                        styles.progressFill,
-                        {
-                          width: `${Math.min(
-                            (currentRunning / savedRunningGoal) * 100,
-                            100
-                          )}%`,
-                        },
-                      ]}
-                    />
-                  </View>
-                </View>
-              )}
-            </View>
-
-            <TouchableOpacity style={styles.saveButton} onPress={saveStepGoal}>
-              <Text style={styles.saveButtonText}>Save Goals</Text>
+              <Text style={styles.saveButtonText}>Save All Goals</Text>
             </TouchableOpacity>
           </View>
         </TouchableWithoutFeedback>
@@ -187,68 +200,35 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    paddingTop: 40,
+    paddingTop: 60,
   },
   header: {
     fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 30,
     color: '#333',
-  },
-  section: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  subheader: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 12,
-    color: '#444',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    backgroundColor: '#fff',
-  },
-  progressContainer: {
-    marginTop: 12,
-  },
-  progressLabel: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 6,
-  },
-  progressBar: {
-    height: 6,
-    backgroundColor: '#e0e0e0',
-    borderRadius: 3,
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#007AFF',
-    borderRadius: 3,
+    textAlign: 'center',
   },
   saveButton: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 14,
-    paddingHorizontal: 20,
-    borderRadius: 10,
+    backgroundColor: '#4a6ee0',
+    flexDirection: 'row',
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 12,
     alignItems: 'center',
-    marginTop: 10,
+    justifyContent: 'center',
+    marginTop: 20,
+    marginBottom: 40,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
   },
   saveButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '600',
+    marginLeft: 10,
   },
 });

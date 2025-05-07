@@ -1,32 +1,18 @@
 import express from 'express';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
 import CalorieLog from '../schemas/CaloriesSchema.js';
-
-dotenv.config();
+import { getDayRange } from '../utils/getDateUtil.js';
 
 const router = express.Router();
-const mongoUrl = process.env.MONGODB_URI;
 
-if (!mongoUrl) {
-  console.error('MONGODB_URI is not defined in environment variables');
-}
-
-// Connect to MongoDB database
-mongoose
-  .connect(mongoUrl, {
-    dbName: 'FitAppBackend',
-  })
-  .then(() => console.log('Connected to MongoDB - FitAppBackend'))
-  .catch((err) => console.error('MongoDB connection error:', err));
-
+// Get the users calories data for a specific day
 router.get('/:date/:userId', async (req, res) => {
-  try {
-    const { date, userId } = req.params;
-    const parsedDate = new Date(date);
-    const startOfDay = new Date(parsedDate.setHours(0, 0, 0, 0));
-    const endOfDay = new Date(parsedDate.setHours(23, 59, 59, 999));
+  const { date, userId } = req.params;
 
+  // Get start and end of day range so data is accurate for the current day
+  const { start: startOfDay, end: endOfDay } = getDayRange(date);
+
+  // Finds the calorie log for a user on a specific day
+  try {
     const log = await CalorieLog.findOne({
       userId,
       date: {
@@ -36,28 +22,29 @@ router.get('/:date/:userId', async (req, res) => {
     });
 
     if (!log) {
-      return res.status(404).json({ message: 'No data found for this date' });
+      return res.status(404).json({ message: 'No log found for this date' });
     }
 
     res.status(200).json(log);
   } catch (error) {
-    console.error('Error fetching calorie log:', error);
-    res
-      .status(500)
-      .json({ message: 'Error fetching calorie log', error: error.message });
+    console.error('Something went wrong when fetching calorie log:', error);
+    res.status(500).json({
+      message: 'Something went wrong when fetching calorie log:',
+      error: error.message,
+    });
   }
 });
 
 // Create user calorie log or update existing one
 router.post('/:date/:userId', async (req, res) => {
-  try {
-    const { userId, date } = req.params;
-    const { dailyGoal, consumed, burnedExercise, burnedSteps } = req.body;
-    const parsedDate = new Date(date);
-    const startOfDay = new Date(parsedDate.setHours(0, 0, 0, 0));
-    const endOfDay = new Date(parsedDate.setHours(23, 59, 59, 999));
+  const { userId, date } = req.params;
+  const { dailyGoal, consumed, burnedExercise, burnedSteps } = req.body;
 
-    // Check if a log already exists for the user on a given date
+  // Get start and end of day range so data is accurate for the current day
+  const { start: startOfDay, end: endOfDay } = getDayRange(date);
+
+  try {
+    // Check if a log already exists on the same day
     let existingLog = await CalorieLog.findOne({
       userId,
       date: {
@@ -66,17 +53,26 @@ router.post('/:date/:userId', async (req, res) => {
       },
     });
 
-    // Update current data
+    // If no log, prepare to update data
     const update = {
       userId,
       date: startOfDay,
       dailyGoal: dailyGoal ?? existingLog?.dailyGoal ?? 2000,
       consumed: consumed ?? existingLog?.consumed ?? 0,
-      burnedExercise: burnedExercise ?? existingLog?.burnedExercise ?? 0,
-      burnedSteps: burnedSteps ?? existingLog?.burnedSteps ?? 0,
     };
 
-    // If document exists, update it; if not, create new one
+    // Check to see if there are exercise calories to add, if so add them to the update
+    if (burnedExercise !== undefined) {
+      update.burnedExercise =
+        (existingLog?.burnedExercise || 0) + burnedExercise;
+    }
+
+    // Check to see if there are step calories to add (from walking), if so add them to update
+    if (burnedSteps !== undefined) {
+      update.burnedSteps = (existingLog?.burnedSteps || 0) + burnedSteps;
+    }
+
+    // Create a new log if none exists for the user on the current day, else update the existing one
     const log = await CalorieLog.findOneAndUpdate(
       {
         userId,

@@ -1,5 +1,6 @@
-import { isValidNumber } from './validation';
+import { isValidNumber } from '../utils/validation';
 
+// Handle add calories to daily goal
 export const handleAddCalories = async (
   addCalories,
   consumedCalories,
@@ -18,6 +19,7 @@ export const handleAddCalories = async (
   }
 };
 
+// Handle calorie substraction from daily goal
 export const handleRemoveCalories = async (
   removeCalories,
   consumedCalories,
@@ -36,6 +38,7 @@ export const handleRemoveCalories = async (
   }
 };
 
+// Handle update of daily goal
 export const handleGoalUpdate = async (
   tempGoal,
   saveCalorieData,
