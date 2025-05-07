@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
+  
 } from 'react-native';
 import CircularProgress from '../components/CircularProgress';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -65,7 +66,7 @@ export default function CalorieScreen() {
           setBurnedSteps(data.burnedSteps || 0);
         }
       } catch (error) {
-        console.error('Failed to load data:', error);
+        console.error("Failed to load data:", error);
       }
     };
 
@@ -75,28 +76,27 @@ export default function CalorieScreen() {
   // Save calorie data to backend
   const saveCalorieData = async (updates) => {
     if (!userId) return false;
-
     const dateStr = formatDateForAPI(selectedDate);
     try {
       const response = await fetch(
         `http://10.0.2.2:3000/calories/${dateStr}/${userId}`,
         {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(updates), // Only send what is updated
         }
       );
 
       if (!response.ok) {
-        console.error('Failed to save calorie data:', await response.text());
+        console.error("Failed to save calorie data:", await response.text());
         return false;
       }
 
       return true;
     } catch (error) {
-      console.error('Error saving calorie data:', error);
+      console.error("Error saving calorie data:", error);
       return false;
     }
   };
@@ -141,11 +141,11 @@ export default function CalorieScreen() {
       <View style={styles.progressContainer}>
         <TouchableOpacity onPress={() => setShowDatePicker(true)}>
           <Text style={[styles.dateText, styles.clickableText]}>
-            {selectedDate.toLocaleDateString('en-US', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
+            {selectedDate.toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
             })}
           </Text>
         </TouchableOpacity>
@@ -205,20 +205,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   progressContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 30,
   },
   dateText: {
     fontSize: 18,
-    fontWeight: '500',
-    color: '#333',
+    fontWeight: "500",
+    color: "#333",
     marginBottom: 15,
   },
   statsContainer: {
-    width: '100%',
+    width: "100%",
     marginTop: 20,
   },
   breakdownText: {
@@ -228,23 +228,23 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   inputRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    width: '100%',
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
   },
   input: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 8,
     padding: 12,
     marginRight: 10,
     fontSize: 20,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     height: 50,
-    color: '#000',
+    color: "#000",
   },
   clickableText: {
-    textDecorationLine: 'underline',
+    textDecorationLine: "underline",
   },
 });
