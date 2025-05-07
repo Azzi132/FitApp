@@ -1,30 +1,136 @@
 import express from 'express';
-import { MongoClient } from 'mongodb';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import mongoose from 'mongoose';
+import Workout from '../schemas/WorkoutSchema.js';
 
 const router = express.Router();
-const url = process.env.MONGODB_URI;
-const dbName = 'FitAppBackend';
 
-if (!url) {
-  console.error('MONGODB_URI is not defined in environment variables');
-}
+// Get or create workout data for the current week
+router.get('/:userId/:startDate', async (req, res) => {
+  const { userId, startDate } = req.params;
+  const currentWorkoutWeek = [];
 
-router.get('/', async (req, res) => {
-  let client;
+  // Set startDate based on req and ensure it starts/ends at the beginning/end of the day in GMT+2
+  const start = new Date(startDate);
+  start.setHours(0, 0, 0, 0);
+  const end = new Date(start);
+  end.setDate(end.getDate() + 7); // 7 days for a week
+
   try {
-    client = await MongoClient.connect(url);
-    const db = client.db(dbName);
-    const workouts = await db.collection('Workouts').find({}).toArray();
-    res.status(200).json(workouts);
+    // Fetch existing workouts for current user within the current week
+    const workouts = await Workout.find({
+      userId,
+      date: { $gte: start, $lt: end },
+    });
+
+    for (let x = new Date(start); x < end; x.setDate(x.getDate() + 1)) {
+      const currentDate = new Date(x);
+
+      // Check if workout exists for current day
+      const existingWorkout = workouts.find(
+        (w) => w.date.toDateString() === currentDate.toDateString()
+      );
+
+      // If there is a workout add it, if not create one with default values
+      if (existingWorkout) {
+        currentWorkoutWeek.push(existingWorkout);
+      } else {
+        currentWorkoutWeek.push({
+          userId,
+          date: new Date(currentDate),
+          cardio: 0,
+          power: 0,
+          steps: 0,
+          dailyCardioGoal: 0,
+          dailyPowerGoal: 0,
+          dailyStepGoal: 0,
+        });
+      }
+    }
+
+    res.status(200).json(currentWorkoutWeek);
   } catch (error) {
+    res.status(500).json({
+      message: 'Error getting workouts from database',
+      error: error.message,
+    });
+  }
+});
+
+// Update workout data for a specific day
+router.post('/:userId/:date', async (req, res) => {
+  const { userId, date } = req.params;
+  const { workoutData } = req.body;
+
+  const updateData = {};
+
+  // Set day clock to beginning of the day to avoid issues with DB updates
+  const parsedDate = new Date(date);
+  parsedDate.setHours(0, 0, 0, 0);
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    // Find existing workout or a create new one with default values
+    let workout = await Workout.findOneAndUpdate(
+      { userId, date: parsedDate },
+      {
+        $setOnInsert: {
+          userId,
+          date: parsedDate,
+          cardio: 0,
+          power: 0,
+          steps: 0,
+          dailyCardioGoal: 0,
+          dailyPowerGoal: 0,
+          dailyStepGoal: 0,
+        },
+      },
+      {
+        upsert: true, // Create a new document if it doesn't exist
+        new: true, // Return the updated document
+        session, // associate with this mongoDB session
+      }
+    );
+
+    // Prepare update data (ensure only valid data is updated)
+    if (workoutData.cardio !== undefined)
+      updateData.cardio = workoutData.cardio;
+
+    if (workoutData.power !== undefined) updateData.power = workoutData.power;
+
+    if (workoutData.steps !== undefined) updateData.steps = workoutData.steps;
+
+    if (workoutData.dailyCardioGoal !== undefined)
+      updateData.dailyCardioGoal = workoutData.dailyCardioGoal;
+
+    if (workoutData.dailyPowerGoal !== undefined)
+      updateData.dailyPowerGoal = workoutData.dailyPowerGoal;
+
+    if (workoutData.dailyStepGoal !== undefined)
+      updateData.dailyStepGoal = workoutData.dailyStepGoal;
+
+    // Update workout data where it's relevant (data exists)
+    if (Object.keys(updateData).length > 0) {
+      workout = await Workout.findOneAndUpdate(
+        { userId, date: parsedDate },
+        { $set: updateData },
+        { new: true, session }
+      );
+    }
+
+    // Commit and end session
+    await session.commitTransaction();
+
+    res.status(200).json(workout);
+  } catch (error) {
+    // Rollback if error
+    await session.abortTransaction();
     res
       .status(500)
-      .json({ message: 'Error fetching workouts', error: error.message });
+      .json({ message: 'Error updating workout', error: error.message });
   } finally {
-    if (client) await client.close();
+    session.endSession();
   }
 });
 

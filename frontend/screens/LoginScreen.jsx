@@ -3,17 +3,20 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   StyleSheet,
   ActivityIndicator,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
-import { storeUserData } from '../utils/auth';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { storeUserData } from '../handlers/authHandlers';
 
 export default function LoginScreen({ navigation }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleLogin = async () => {
     try {
@@ -56,69 +59,179 @@ export default function LoginScreen({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Login</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={(text) => setUsername(text.toLowerCase())}
-        editable={!loading}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        secureTextEntry
-        value={password}
-        onChangeText={setPassword}
-        editable={!loading}
-      />
-      {error ? <Text style={styles.error}>{error}</Text> : null}
-      <View style={styles.buttonRow}>
-        {loading ? (
-          <ActivityIndicator size="large" color="#0000ff" />
-        ) : (
-          <>
-            <Button title="Login" onPress={handleLogin} />
-            <View style={{ width: 10 }} />
-            <Button title="Register" onPress={handleRegister} />
-          </>
-        )}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+    >
+      <View style={styles.content}>
+        <View style={styles.header}>
+          <MaterialCommunityIcons name="dumbbell" size={64} color="#4a6ee0" />
+          <Text style={styles.title}>Fit App</Text>
+          <Text style={styles.subtitle}>Your Personal Fitness Companion</Text>
+        </View>
+        <View style={styles.form}>
+          <View style={styles.inputContainer}>
+            <MaterialCommunityIcons
+              name="account"
+              size={24}
+              color="#666"
+              style={styles.inputIcon}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Username"
+              placeholderTextColor="#666"
+              value={username}
+              onChangeText={(text) => setUsername(text.toLowerCase())}
+              editable={!loading}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <MaterialCommunityIcons
+              name="lock"
+              size={24}
+              color="#666"
+              style={styles.inputIcon}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              placeholderTextColor="#666"
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+              editable={!loading}
+            />
+          </View>
+          {error ? <Text style={styles.error}>{error}</Text> : null}
+          <TouchableOpacity
+            style={styles.loginButton}
+            onPress={handleLogin}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <>
+                <MaterialCommunityIcons
+                  name="login"
+                  size={24}
+                  color="#fff"
+                  style={styles.buttonIcon}
+                />
+                <Text style={styles.buttonText}>Login</Text>
+              </>
+            )}
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.registerButton}
+            onPress={handleRegister}
+            disabled={loading}
+          >
+            <MaterialCommunityIcons
+              name="account-plus"
+              size={24}
+              color="#4a6ee0"
+              style={styles.buttonIcon}
+            />
+            <Text style={styles.registerText}>Create an Account</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  content: {
+    flex: 1,
+    padding: 20,
     justifyContent: 'center',
-    padding: 24,
-    backgroundColor: '#fff',
   },
   header: {
-    fontSize: 28,
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  title: {
+    fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 32,
-    alignSelf: 'center',
+    color: '#333',
+    marginTop: 16,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#666',
+    marginTop: 8,
+  },
+  form: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f0f3ff',
+    borderRadius: 12,
+    marginBottom: 16,
+    paddingHorizontal: 16,
+  },
+  inputIcon: {
+    marginRight: 12,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 10,
-    marginBottom: 16,
+    flex: 1,
+    paddingVertical: 16,
     fontSize: 16,
-    backgroundColor: '#fff',
+    color: '#333',
   },
-  buttonRow: {
+  loginButton: {
+    backgroundColor: '#4a6ee0',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  registerButton: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    marginTop: 12,
+  },
+  buttonIcon: {
+    marginRight: 8,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: '600',
+  },
+  registerText: {
+    color: '#4a6ee0',
+    fontSize: 16,
+    fontWeight: '600',
   },
   error: {
-    color: 'red',
-    marginBottom: 12,
-    alignSelf: 'center',
+    color: '#ff6b6b',
+    textAlign: 'center',
+    marginBottom: 16,
+    fontSize: 14,
   },
 });

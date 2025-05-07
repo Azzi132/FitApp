@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { StyleSheet, Button, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { clearUserData } from './utils/auth';
+import { clearUserData } from './handlers/authHandlers';
 import LoginScreen from './screens/LoginScreen';
 import WorkoutScreen from './screens/WorkoutScreen';
 import GoalScreen from './screens/GoalScreen';
@@ -14,6 +14,7 @@ import ChatScreen from './screens/ChatScreen';
 const Stack = createStackNavigator();
 
 export default function App() {
+  // Clear user data when app starts
   useEffect(() => {
     clearUserData();
   }, []);

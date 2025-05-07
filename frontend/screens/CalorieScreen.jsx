@@ -6,68 +6,63 @@ import {
   TextInput,
   Button,
   TouchableOpacity,
-  Modal,
 } from 'react-native';
 import CircularProgress from '../components/CircularProgress';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { getUserData } from '../utils/auth';
-import { isValidNumber } from '../utils/validation';
+import { getUserData } from '../handlers/authHandlers';
 import {
   handleAddCalories,
   handleRemoveCalories,
-  handleGoalUpdate,
-} from '../utils/calorieHandlers';
+} from '../handlers/calorieHandlers';
+import StatItem from '../components/StatItem';
+import { getLocalDate, formatDateForAPI } from '../utils/dateUtils';
 
 export default function CalorieScreen() {
-  // Frontend data
+  // Variables for UI and user interaction
   const [userId, setUserId] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(getLocalDate());
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [isGoalModalVisible, setIsGoalModalVisible] = useState(false);
 
-  // Mongodb data
+  // Variables for calorie tracking data from MongoDB
   const [totalDailyGoal, setTotalDailyGoal] = useState(2000);
   const [consumedCalories, setConsumedCalories] = useState(0);
   const [burnedExercise, setBurnedExercise] = useState(0);
   const [burnedSteps, setBurnedSteps] = useState(0);
 
-  // User input data
+  // Variables for input
   const [addCalories, setAddCalories] = useState('');
   const [removeCalories, setRemoveCalories] = useState('');
-  const [tempGoal, setTempGoal] = useState('');
 
+  // Load user data and calorie info
   useEffect(() => {
     const loadDataAndUser = async () => {
       const userData = await getUserData();
       if (!userData || !userData._id) return;
-      const currentUserId = userData._id;
-      setUserId(currentUserId);
+      setUserId(userData._id);
 
       try {
-        const dateStr = selectedDate.toISOString().split('T')[0];
+        // Fetch calorie data for selected date
+        const dateStr = formatDateForAPI(selectedDate);
         const response = await fetch(
-          `http://10.0.2.2:3000/calories/${dateStr}/${currentUserId}`
+          `http://10.0.2.2:3000/calories/${dateStr}/${userData._id}`
         );
+
+        // If no data exists for this date do default values
         if (response.status === 404) {
-          // No data exists for this date, set defaults without creating DB entry
-          setTotalDailyGoal(2000);
           setConsumedCalories(0);
           setBurnedExercise(0);
           setBurnedSteps(0);
+          setTotalDailyGoal(2000);
           return;
         }
+
+        // Update with fetched data
         const data = await response.json();
         if (response.ok && data) {
-          setTotalDailyGoal(
-            isValidNumber(data.dailyGoal) ? data.dailyGoal : 2000
-          );
-          setConsumedCalories(isValidNumber(data.consumed) ? data.consumed : 0);
-          setBurnedExercise(
-            isValidNumber(data.burnedExercise) ? data.burnedExercise : 0
-          );
-          setBurnedSteps(
-            isValidNumber(data.burnedSteps) ? data.burnedSteps : 0
-          );
+          setTotalDailyGoal(data.dailyGoal || 2000);
+          setConsumedCalories(data.consumed || 0);
+          setBurnedExercise(data.burnedExercise || 0);
+          setBurnedSteps(data.burnedSteps || 0);
         }
       } catch (error) {
         console.error('Failed to load data:', error);
@@ -77,10 +72,11 @@ export default function CalorieScreen() {
     loadDataAndUser();
   }, [selectedDate]);
 
+  // Save calorie data to backend
   const saveCalorieData = async (updates) => {
     if (!userId) return false;
 
-    const dateStr = selectedDate.toISOString().split('T')[0];
+    const dateStr = formatDateForAPI(selectedDate);
     try {
       const response = await fetch(
         `http://10.0.2.2:3000/calories/${dateStr}/${userId}`,
@@ -89,13 +85,7 @@ export default function CalorieScreen() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            dailyGoal: totalDailyGoal,
-            consumed: consumedCalories,
-            burnedExercise: burnedExercise,
-            burnedSteps: burnedSteps,
-            ...updates,
-          }),
+          body: JSON.stringify(updates), // Only send what is updated
         }
       );
 
@@ -111,9 +101,10 @@ export default function CalorieScreen() {
     }
   };
 
-  // Calculate total calories burned and remaining calories
-  const caloriesBurnedFromSteps = Math.round(burnedSteps * 0.04) || 0;
-  const totalCaloriesBurned = caloriesBurnedFromSteps + burnedExercise;
+  // Calculate calories burned and remaining
+  const caloriesBurnedFromSteps = Math.round(burnedSteps * 0.04) || 0; // Convert steps to calories (approximate)
+  const totalCaloriesBurned = caloriesBurnedFromSteps + Math.round(burnedSteps);
+
   const remainingCalories = Math.max(
     0,
     totalDailyGoal - consumedCalories + totalCaloriesBurned
@@ -137,18 +128,10 @@ export default function CalorieScreen() {
       setRemoveCalories
     );
 
-  const onGoalUpdate = () =>
-    handleGoalUpdate(
-      tempGoal,
-      saveCalorieData,
-      setTotalDailyGoal,
-      setTempGoal,
-      setIsGoalModalVisible
-    );
-
+  // Handler for date picker changes
   const onDateChange = (event, date) => {
     setShowDatePicker(false);
-    if (date && date <= new Date()) {
+    if (date && date <= getLocalDate()) {
       setSelectedDate(date);
     }
   };
@@ -175,44 +158,23 @@ export default function CalorieScreen() {
             maximumDate={new Date()}
           />
         )}
-        <TouchableOpacity onPress={() => setIsGoalModalVisible(true)}>
-          <CircularProgress
-            value={remainingCalories}
-            maxValue={totalDailyGoal}
-          />
-        </TouchableOpacity>
+        <CircularProgress
+          value={remainingCalories}
+          maxValue={totalDailyGoal}
+          labelFormat="remaining"
+        />
         <View style={styles.statsContainer}>
           <Text style={styles.breakdownText}>
             Here's a breakdown of your daily calorie distribution.
           </Text>
-          <View style={styles.statItem}>
-            <View style={styles.iconTextContainer}>
-              <Text style={[styles.statLabel, styles.foodIcon]}>🎯</Text>
-              <Text style={styles.statLabel}>Daily Goal</Text>
-            </View>
-            <Text style={styles.statValue}>{totalDailyGoal}</Text>
-          </View>
-          <View style={styles.statItem}>
-            <View style={styles.iconTextContainer}>
-              <Text style={[styles.statLabel, styles.foodIcon]}>🍽️</Text>
-              <Text style={styles.statLabel}>Food</Text>
-            </View>
-            <Text style={styles.statValue}>{consumedCalories}</Text>
-          </View>
-          <View style={styles.statItem}>
-            <View style={styles.iconTextContainer}>
-              <Text style={styles.statLabel}>🏃</Text>
-              <Text style={styles.statLabel}>Exercise</Text>
-            </View>
-            <Text style={styles.statValue}>{burnedExercise}</Text>
-          </View>
-          <View style={styles.statItem}>
-            <View style={styles.iconTextContainer}>
-              <Text style={styles.statLabel}>👣</Text>
-              <Text style={styles.statLabel}>Steps</Text>
-            </View>
-            <Text style={styles.statValue}>{caloriesBurnedFromSteps}</Text>
-          </View>
+          <StatItem icon="🎯" label="Daily Goal" value={totalDailyGoal} />
+          <StatItem icon="🍽️" label="Food" value={consumedCalories} />
+          <StatItem icon="🏋️" label="Exercise" value={`-${burnedExercise}`} />
+          <StatItem
+            icon="👣"
+            label="Steps"
+            value={`-${Math.round(burnedSteps)}`}
+          />
         </View>
       </View>
       <View style={styles.inputRow}>
@@ -235,33 +197,6 @@ export default function CalorieScreen() {
         />
         <Button title="Remove" onPress={onRemoveCalories} />
       </View>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isGoalModalVisible}
-        onRequestClose={() => setIsGoalModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Update Daily Goal</Text>
-            <TextInput
-              style={styles.modalInput}
-              placeholder="Enter new goal"
-              value={tempGoal}
-              onChangeText={setTempGoal}
-              keyboardType="number-pad"
-            />
-            <View style={styles.modalButtons}>
-              <Button
-                title="Cancel"
-                onPress={() => setIsGoalModalVisible(false)}
-              />
-              <Button title="Update" onPress={onGoalUpdate} />
-            </View>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 }
@@ -286,26 +221,11 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 20,
   },
-  statItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E8E8E8',
-  },
-  statLabel: {
+  breakdownText: {
     fontSize: 16,
     color: '#666',
-  },
-  statValue: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  iconTextContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+    textAlign: 'center',
+    marginBottom: 5,
   },
   inputRow: {
     flexDirection: 'row',
@@ -326,41 +246,5 @@ const styles = StyleSheet.create({
   },
   clickableText: {
     textDecorationLine: 'underline',
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    width: '80%',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  modalInput: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 15,
-    fontSize: 16,
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  breakdownText: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 5,
   },
 });
