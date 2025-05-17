@@ -59,18 +59,17 @@ router.post('/:date/:userId', async (req, res) => {
       date: startOfDay,
       dailyGoal: dailyGoal ?? existingLog?.dailyGoal ?? 2000,
       consumed: consumed ?? existingLog?.consumed ?? 0,
+      // Check to see if there are exercise calories to add, if so add them to the update
+      burnedExercise:
+        burnedExercise !== undefined
+          ? (existingLog?.burnedExercise || 0) + burnedExercise
+          : existingLog?.burnedExercise || 0,
+      // Check to see if there are step calories to add (from walking), if so add them to update
+      burnedSteps:
+        burnedSteps !== undefined
+          ? (existingLog?.burnedSteps || 0) + burnedSteps
+          : existingLog?.burnedSteps || 0,
     };
-
-    // Check to see if there are exercise calories to add, if so add them to the update
-    if (burnedExercise !== undefined) {
-      update.burnedExercise =
-        (existingLog?.burnedExercise || 0) + burnedExercise;
-    }
-
-    // Check to see if there are step calories to add (from walking), if so add them to update
-    if (burnedSteps !== undefined) {
-      update.burnedSteps = (existingLog?.burnedSteps || 0) + burnedSteps;
-    }
 
     // Create a new log if none exists for the user on the current day, else update the existing one
     const log = await CalorieLog.findOneAndUpdate(

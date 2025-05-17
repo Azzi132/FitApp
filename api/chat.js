@@ -1,6 +1,6 @@
 const API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const API_KEY =
-  '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';
+  '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';
 
 let conversationHistory = [];
 
