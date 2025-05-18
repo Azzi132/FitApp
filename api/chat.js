@@ -8,7 +8,6 @@ let conversationHistory = [];
 let Context = {
   currentStage: 'engaging',
   userGoals: [],
-  sessionCount: 1,
 };
 
 // The main guidance message prompt for deepSeek
@@ -249,6 +248,5 @@ export const clearConversation = () => {
   Context = {
     userGoals: [],
     currentStage: 'exploring',
-    sessionCount: Context.sessionCount + 1,
   };
 };
