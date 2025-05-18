@@ -247,6 +247,6 @@ export const clearConversation = () => {
   conversationHistory = [];
   Context = {
     userGoals: [],
-    currentStage: 'exploring',
+    currentStage: 'engaging',
   };
 };
