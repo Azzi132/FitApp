@@ -200,9 +200,9 @@ const updateContext = (message) => {
 
   // Update current motivational interviewing stage
   const messageCount = conversationHistory.length;
-  if (messageCount > 10) Context.currentStage = 'planning';
+  if (messageCount > 3) Context.currentStage = 'focusing';
   else if (messageCount > 6) Context.currentStage = 'evoking';
-  else if (messageCount > 3) Context.currentStage = 'focusing';
+  else if (messageCount > 10) Context.currentStage = 'planning';
 };
 
 // Send message to the API
