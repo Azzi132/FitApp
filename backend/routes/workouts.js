@@ -4,6 +4,18 @@ import Workout from '../schemas/WorkoutSchema.js';
 
 const router = express.Router();
 
+// Default values for a new workout document
+const getDefaultWorkout = (userId, date) => ({
+  userId,
+  date,
+  cardio: 0,
+  power: 0,
+  steps: 0,
+  dailyCardioGoal: 0,
+  dailyPowerGoal: 0,
+  dailyStepGoal: 0,
+});
+
 // Get or create workout data for the current week
 router.get('/:userId/:startDate', async (req, res) => {
   const { userId, startDate } = req.params;
@@ -34,16 +46,9 @@ router.get('/:userId/:startDate', async (req, res) => {
       if (existingWorkout) {
         currentWorkoutWeek.push(existingWorkout);
       } else {
-        currentWorkoutWeek.push({
-          userId,
-          date: new Date(currentDate),
-          cardio: 0,
-          power: 0,
-          steps: 0,
-          dailyCardioGoal: 0,
-          dailyPowerGoal: 0,
-          dailyStepGoal: 0,
-        });
+        currentWorkoutWeek.push(
+          getDefaultWorkout(userId, new Date(currentDate))
+        );
       }
     }
 
@@ -61,8 +66,6 @@ router.post('/:userId/:date', async (req, res) => {
   const { userId, date } = req.params;
   const { workoutData } = req.body;
 
-  const updateData = {};
-
   // Set day clock to beginning of the day to avoid issues with DB updates
   const parsedDate = new Date(date);
   parsedDate.setHours(0, 0, 0, 0);
@@ -71,21 +74,10 @@ router.post('/:userId/:date', async (req, res) => {
   session.startTransaction();
 
   try {
-    // Find existing workout or a create new one with default values
+    // Find existing workout or create a new one with default values
     let workout = await Workout.findOneAndUpdate(
       { userId, date: parsedDate },
-      {
-        $setOnInsert: {
-          userId,
-          date: parsedDate,
-          cardio: 0,
-          power: 0,
-          steps: 0,
-          dailyCardioGoal: 0,
-          dailyPowerGoal: 0,
-          dailyStepGoal: 0,
-        },
-      },
+      { $setOnInsert: getDefaultWorkout(userId, parsedDate) },
       {
         upsert: true, // Create a new document if it doesn't exist
         new: true, // Return the updated document
@@ -93,24 +85,24 @@ router.post('/:userId/:date', async (req, res) => {
       }
     );
 
-    // Prepare update data (ensure only valid data is updated)
-    if (workoutData.cardio !== undefined)
-      updateData.cardio = workoutData.cardio;
+    // Only include fields that are defined in the request
+    const updateData = {};
+    const validFields = [
+      'cardio',
+      'power',
+      'steps',
+      'dailyCardioGoal',
+      'dailyPowerGoal',
+      'dailyStepGoal',
+    ];
 
-    if (workoutData.power !== undefined) updateData.power = workoutData.power;
+    validFields.forEach((field) => {
+      if (workoutData[field] !== undefined) {
+        updateData[field] = workoutData[field];
+      }
+    });
 
-    if (workoutData.steps !== undefined) updateData.steps = workoutData.steps;
-
-    if (workoutData.dailyCardioGoal !== undefined)
-      updateData.dailyCardioGoal = workoutData.dailyCardioGoal;
-
-    if (workoutData.dailyPowerGoal !== undefined)
-      updateData.dailyPowerGoal = workoutData.dailyPowerGoal;
-
-    if (workoutData.dailyStepGoal !== undefined)
-      updateData.dailyStepGoal = workoutData.dailyStepGoal;
-
-    // Update workout data where it's relevant (data exists)
+    // Update workout data if there are fields to update
     if (Object.keys(updateData).length > 0) {
       workout = await Workout.findOneAndUpdate(
         { userId, date: parsedDate },
