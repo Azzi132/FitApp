@@ -1,0 +1,206 @@
+1/Q/Hi #(username) I'd love to hear what that's all about. Do you have any concerns you'd like to talk with me?
+2/Q/Hello #(username). What brings you in today?
+3/Q/Hi #(User_name). I know you had some things you wanted to talk about, so what brings you in today?
+4/Q/I assume, from the fact that you are here, that you have some things you want to talk over with a counsellor. What would you like to discuss?
+5/Q/I'd like to understand how you see things. What's brought you here? What's been the problem?
+6/R/You have struggled so much inside yourself that you weren't sure how to be open about that struggle.
+7/I/I am a chatbot that listens to your stories and helps you guide yourself.
+8/Q/PQ/You sometimes wonder who could possibly understand all that you've been through and what this has meant for you as a person. Would you share some of your struggles with me?
+9/I/Since I take your privacy seriously, you feel free to share whatever you would like.
+10/I/Since I take your privacy seriously, you can talk about anything you would like, without fear of that information leaving the room.
+11/I/Since I take your personal information seriously, I hope you feel comfortable sharing your feelings, concerns, and problems.
+12/I/Everything you say in this chat will be kept secret, so no worries!
+13/I/I won't disclose personal information about your feelings, their pasts, and concerns.
+14/Q/PQ/In what way does this bother you?
+15/Q/PQ/In what way does this bother us now to you?
+16/Q/PQ/What things make you think that this is a problem?
+17/Q/PQ/What difficulties have you had in relation to your problem?
+18/Q/PQ/What worries you about your "tproblem"?
+19/Q/PQ/In what ways do you think you have been harmed?
+20/Q/PQ/What is it like for us to share what you've been keeping inside for so long?
+21/Q/PQ/What keeps this problem going?
+22/Q/PQ/How much does that concern you? In what ways?
+23/Q/PQ/How would you feel about that?
+24/Q/PQ/How has "(problem/issue) affected your daily routine?
+25/Q/PQ/How long has he was going on?
+26/Q/PQ/How has "way" "(problem) stopped you from doing what you want to do ?
+27/Q/PQ/Anything specific about your thought that made you feel as you do?
+28/Q/PQ/What made you nervous?
+29/Q/PQ/What contributed to this nervousness?
+30/Q/PQ/What kinds of things can help you settle down?
+31/Q/PQ/What can you do about your frustrations?
+32/Q/PQ/What steps can you take to avoid the frustrations?
+33/Q/PQ/What methods do you currently use to calm your self talk and in what ways are they not working for you?
+34/Q/PQ/Where do you think your "(feeling) about being still stems from?
+35/Q/PQ/What have you done to cope with these feelings?
+36/Q/PQ/What will you keep her blister?
+37/Q/PQ/What can you do to help decrease your stress?
+38/Q/PQ/How do you feel not being the high achiever that you were before at school?
+39/Q/PQ/Where did this problem begin?
+40/Q/PQ/How did you come to that conclusion?
+41/Q/PQ/What worries you about your current situation?
+42/Q/PQ/What concerns you the most about this in the long term?
+43/Q/PQ/What do you think will happen if you do not take action against your problem?
+44/Q/EQ/In what ways does this concern you?
+45/Q/EQ/What do you imagine are the worst things that might happen to you "(physically, psychologically, socially)?
+46/Q/EQ/What is there about your problem that you or other people might see as reasons for concern?
+47/Q/EQ/What concerns you the most?
+48/Q/EQ/What are your worst fears about what might happen if you don’t make a change?
+49/Q/EQ/What would your friends say about "(problem/your behavior)?
+50/Q/EQ/What would your partner say about what you’re doing?
+51/Q/EQ/Tell me what your family would say about "(current behavior/problem)?
+52/Q/EQ/Is it fresh at your day, now, would we see it the same way?
+53/R/If I heard you correctly, this is what I think you are saying *.
+54/R/Given what you said, you might feel * (feeling).
+55/R/You are having trouble with "(problem).
+56/R/Some of what I heard you say *.
+57/R/You can not be thinking that you might be able to do " or *.
+58/R/You're disappointed that *.
+59/R/You feel you have failed *.
+60/R/It sounds like you may be feeling some * with that.
+61/R/You sound "(sensical) with "(problem).
+62/R/You feel "(remote) because you cannot "(problem) and you want to "(goal).
+63/R/You are frustrated about not being able to have better control "(problem) despite doing your best.
+64/R/You are not sure what else to do.
+65/R/You are struggling with figuring out what else you could do to improve "(problem).
+66/R/You care so much about controlling your "(problem) and you want to figure out what else you could work on changing to help you better control it and live better life.
+67/R/You are certainly having no cope with that of problem or fight non-more than most people. I can understand how sometimes you want an "fire" so badly, you want a release from it all.
+68/R/On one hand, you feel you have done all you could do to control your "(problem), but on the other hand, you want to figure out what else you need to do.
+69/R/You are feeling overwhelmed with work.
+70/R/You certainly have a lot on your mind.
+71/R/You are not sure how anyone can help.
+72/R/You are the kind of person that follows through when you set your mind to something.
+73/R/You might feel little angry at yourself for getting into this situation.
+74/R/You're willing to take responsibility for your situation and life.
+75/R/I somehow sense that you feel *.
+76/R/You feel overwhelmed, and very, very tired, even with things that you used to be able to manage.
+77/R/I appreciate your willingness to discuss possible options.
+78/R/You seem to be unsure of how to deal with this problem, which leaves you feeling helpless, sad and hopeless.
+79/R/It sounds like you are overloaded and anxious. You feel bogged down.
+80/R/I am guessing it was very hard and difficult for you to endure this situation.
+81/R/I see this is really bringing up some sore spots for you.
+82/R/I can feel you, I have seen a lot of pretty stressed students like you due to similar problems.
+83/R/Everyone gets mad sometimes it's not just you.
+84/R/Nobody can promise you that things will be easy but you will get better.
+85/R/That's understandable.
+86/R/It is understandable that you feel anxious in this situation.
+87/R/It sounds like you had a rough semester.
+88/Q/FQ/What else?
+89/Q/FQ/What else can you think of?
+90/Q/FQ/It's understandable. Please continue.
+91/Q/FQ/What happened next?
+92/Q/FQ/What are your thoughts regarding ‘(problem)?
+93/Q/FQ/What are you thinking about at this point?
+94/Q/FQ/What do you mean?
+95/Q/FQ/Please go on.
+96/Q/FQ/Can you elaborate on that?
+97/Q/FQ/Give me an example.
+98/Q/FQ/What other problems have you had?
+99/Q/FQ/I understand that you have some concerns about ‘(problem). Tell me more about them.
+100/Q/FQ/Is there any other context that you would like me to understand?
+101/Q/FQ/Could you give me some of the details?
+102/Q/FQ/Help me better understand ‘(problem), and how it has affected you life.
+103/Q/FQ/Please go on, I am with you.
+104/Q/FQ/Could you say something about that?
+105/Q/FQ/That’s helpful, I’d appreciate if you could give me more detail.
+106/Q/FQ/I’m beginning to get the picture; but some more examples might help.
+107/Q/FQ/What do you say to yourself that helps you cope?
+108/Q/FQ/What do you do that help?
+109/Q/FQ/What supports do you draw upon?
+110/Q/FQ/What was helpful when you feel ‘(feeling)?
+111/Q/FQ/What strong points do you have that could help you succeed in making this change?
+112/Q/FQ/How have you managed with all you have been through?
+113/Q/FQ/What supports do you draw on in your institution?
+114/Q/FQ/What supports do you draw on in your family, friends, or neighborhood?
+115/Q/FQ/What scores of social support do you have?
+116/Q/FQ/Is there someone at your institution can help you with this?
+117/Q/FQ/Are there others you could call for support? In what ways?
+118/Q/FQ/Who else could help with change?
+119/Q/FQ/When is your time here you made up your mind to do something, and did it?
+120/Q/FQ/It might be something new you learned, a habit that you quit, or some other significant change that you made in your life.
+121/Q/FQ/What did you do that worked? What obstacles were there, and how did you surmount them?
+122/Q/FQ/What did this mean about your resources, skills, and strengths?
+123/Q/FQ/What do you say to yourself that helps you cope?
+124/Q/FQ/What strong points do you have that could help you succeed in making this change?
+125/Q/FQ/Think about times in the past that you have been able to catch yourself like this. How were you at that time?
+126/Q/FQ/What is there about you, what strong points do you have that could help you succeed in dealing with this kind of problem?
+127/Q/FQ/Strong and loving, smart, persistent: Sounds like you have a lot of what it takes to handle tough changes.
+128/Q/FQ/How about their role me and example of a time when you really wanted something and you were after it.
+129/Q/FQ/What might you do if…?
+130/Q/FQ/How could you respond it?
+131/Q/FQ/What do you think would happen if…?
+132/Q/FQ/How have you cope with difficult times in the past?
+133/Q/FQ/You may have felt this way before. Feelings that felt really tough to deal with at that time, turned out to be temporary. How did you cope with it then?
+134/Q/FQ/Do you remember a time when things were going well for you? What has changed?
+135/Q/EQ/If you decide to make a change, what are your hopes for the future?
+136/Q/EQ/How would you like things things to turn out for you?
+137/Q/EQ/I am see that you are feeling really frustrated right now. How would you like things to be different?
+138/Q/EQ/What are the options for you now? What could you do?
+139/Q/EQ/If I waved a magic wand over your head and the problem that brought you here has been solved. What will you notice will be different in your life?
+140/Q/EQ/Suppose that you did succeed and are looking back on it now. What most likely is that worked? How did it happen?
+141/Q/EQ/Suppose that this one big obstacle weren’t there. If that obstacle were removed, then how might you go about making this change?
+142/Q/EQ/Clearly you are feeling very disconnected, even demoralised about this. So use your imagination: if you were to try again, what might be the best way to try?
+143/M/I appreciate how hard it must have been for you to decide to come here. You took a big step!
+144/M/I think it’s great that you want to do something about this problem. That must have been very difficult for you.
+145/M/You are certainly a resourceful person, to have been able to live with the problem this long and not fall apart.
+146/M/That’s a good suggestion.
+147/M/It must be difficult for you to accept a day-to-day life so full of stress. I must say, if I were in your position, I would also find that difficult.
+148/M/It seems like you are a really spirited and strong-willed person in a way.
+149/M/Somehow, you’ve been able to meet the challenges that were once so frightening to you.
+150/M/Something you show a determination that surprises even you.
+151/M/You’ve persevered despite circumstances that many others would not have been able to meet head on as you have.
+152/M/You had wanted so many strong feelings with me.
+153/M/Thank you for sharing your range from me.
+154/M/I appreciate your willingness to share so openly about your “problem”.
+155/M/You have the courage and tenacity to overcome any challenges you face.
+156/M/With all the obstacles you have right now, it’s “fingressive, amazing” that you’ve been able to refrain from engaging in “(risks)/problem behavior).
+157/M/I must say, if I were in your position, I might have a hard time dealing with that amount of stress.
+158/M/You showed a lot of “furtering, courage, determination”) by disclosing your problem.
+159/M/I think what you are doing is really difficult. I’m really proud to be working with you on this.
+160/M/If I were in your shoes, I don’t know if I could have managed nearly so well.
+161/M/You have worked hard to do the right thing, despite how hard it is.
+162/M/You have been successful in sharing your thoughts and being truthful about your emotions.
+163/M/You feel proud of yourself for being able to work your “problem”.
+164/M/You have had some significant setbacks in your life.
+165/M/Somehow, you have been able to meet the challenges that were once so frightening to you.
+166/M/You endured that even though you were under all that pressure? That’s fantastic because it would have been easy to give up and you didn’t.
+167/M/I have heard a lot of students say that.
+168/M/That’s a pretty modern reaction.
+169/M/Many students struggle with the same confusion about how to present the ideas in their mind.
+170/M/Anyone would feel this way if they were to your situation.
+171/M/I hear your struggle and I don’t want to invalidate or minimize your experience but that’s exactly how many students feel during their (graduate) program.
+172/M/You’re not the only one in this.
+173/M/I would have felt that way too.
+174/M/Best of what you’ve been through with your recent disappointing experience, it’s no wonder that you’re ready to give up.
+175/M/However, you still try to make an effort to make better your situation.
+176/M/The emotional state you are experiencing and describing seems to me to be a normal response to your situation.
+177/Q/EQ/I’m impressed that you are still trying to improve your situation in spite of your frustration.
+178/Q/EQ/How might you go about making this change?
+179/Q/EQ/What would be a good first step?
+180/Q/EQ/How will you go about it?
+181/Q/EQ/What obstacles do you foresee, and how might you deal with them?
+182/Q/EQ/What give you some confidence that you can do this?
+183/Q/EQ/What do you think you will do ? What are you thinking at this point about “(problem)”?
+184/Q/EQ/What changes, if any, are you thinking about making?
+185/Q/EQ/What can be some of the good things about making a change?
+186/Q/EQ/At this point, after reviewing all of this, what’s the next step for you?
+187/Q/EQ/What could you do? What are your options?
+188/Q/EQ/It sounds like things can’t stay the way they are now. What do you think you might do ?
+189/Q/EQ/Of the things we have taken about, which ones concern you the most? What do you want to do at this point?
+190/Q/EQ/Where do we go from here?
+191/Q/EQ/What could be the next step now?
+192/Q/EQ/How would you like things to turn out for you now, ideally?
+193/Q/EQ/What do you wish to be different?
+194/Q/EQ/What would be some of the good things about making a change?
+195/Q/EQ/What will it be the whole or problem is solved?
+196/Q/EQ/What will you be doing instead?
+197/Q/EQ/What else needs to happen to move you a little more towards your wish?
+198/Q/EQ/How does this behavior fit into your value?
+199/Q/EQ/What do you feel deep down in your heart about these dilemmas, or options?
+200/Q/EQ/What is your best hope now?
+201/Q/EQ/What are the most successful things have you accomplished? How did you plan to achieve this?
+202/Q/EQ/What do you think you can do to manage all your responsibilities?
+203/Q/EQ/How is going to school benefiting you?
+204/Q/EQ/Do you think the decision on continuing with this loaded schedule will affect you in the near feature not only with grades, but also with your health?
+205/Q/EQ/What do you think you can do next time before class to prepare you so you won’t get bored in class?
+206/Q/EQ/What are your goals now that you’ve started school and got your classes already?
